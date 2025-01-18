@@ -74,6 +74,9 @@ def create_phonemizer(language: str = "a") -> PhonemizerBackend:
     # Map language codes to espeak language codes
     lang_map = {"a": "en-us", "b": "en-gb"}
 
+    # Fix for Speech Central (macOS)
+    language = "a" if language == "o" else language
+
     if language not in lang_map:
         raise ValueError(f"Unsupported language code: {language}")
 
