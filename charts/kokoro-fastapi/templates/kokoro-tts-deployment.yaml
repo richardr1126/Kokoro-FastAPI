@@ -34,31 +34,22 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.kokoroTTS.repository }}:{{ .Values.kokoroTTS.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.kokoroTTS.pullPolicy }}
+          {{- if .Values.kokoroTTS.env }}
           env:
-            - name: PYTHONPATH
-              value: "/app:/app/api"
-            - name: USE_GPU
-              value: "true"
-            - name: PYTHONUNBUFFERED
-              value: "1"
+            {{- toYaml .Values.kokoroTTS.env | nindent 12 }}
+          {{- end }}
           ports:
             - name: kokoro-tts-http
               containerPort: {{ .Values.kokoroTTS.port | default 8880 }}
               protocol: TCP
+          {{- if .Values.kokoroTTS.livenessProbe }}
           livenessProbe:
-            httpGet:
-              path: /health
-              port: kokoro-tts-http
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            timeoutSeconds: 5
+            {{- toYaml .Values.kokoroTTS.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.kokoroTTS.readinessProbe }}
           readinessProbe:
-            httpGet:
-              path: /health
-              port: kokoro-tts-http
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            timeoutSeconds: 5
+            {{- toYaml .Values.kokoroTTS.readinessProbe | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.kokoroTTS.resources | nindent 12 }}
           volumeMounts: []

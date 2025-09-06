@@ -9,6 +9,27 @@ kokoroTTS:
   tag: "latest"
   pullPolicy: Always
   port: 8880
+  env:
+    - name: PYTHONPATH
+      value: "/app:/app/api"
+    - name: USE_GPU
+      value: "true"
+    - name: PYTHONUNBUFFERED
+      value: "1"
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: kokoro-tts-http
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: kokoro-tts-http
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
   resources:
     limits:
       nvidia.com/gpu: 1

@@ -1,0 +1,28 @@
+# Default values for kokoro-fastapi.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+kokoroTTS:
+  replicaCount: 1
+  # The name of the deployment repository
+  repository: "ghcr.io/remsky/kokoro-fastapi-cpu"
+  env:
+    - name: PYTHONPATH
+      value: "/app:/app/api"
+    - name: PYTHONUNBUFFERED
+      value: "1"
+    # ONNX Optimization Settings for Raspberry Pi 5 (4-core ARM Cortex-A76)
+    - name: ONNX_NUM_THREADS
+      value: "4"  # Match the 4 physical cores of RPi5
+    - name: ONNX_INTER_OP_THREADS
+      value: "2"  # Conservative inter-op threading for ARM
+    - name: ONNX_EXECUTION_MODE
+      value: sequential  # Sequential mode often better for ARM with limited cache
+    - name: ONNX_OPTIMIZATION_LEVEL
+      value: basic  # Basic optimization to reduce memory pressure
+    - name: ONNX_MEMORY_PATTERN
+      value: "false"  # Disable memory patterns to reduce overhead
+    - name: ONNX_ARENA_EXTEND_STRATEGY
+      value: kSameAsRequested  # Conservative memory allocation for ARM
+  resources:
+    limits:
+    requests:
